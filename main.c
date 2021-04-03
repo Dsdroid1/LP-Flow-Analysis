@@ -134,6 +134,9 @@ void DeadCodeElimination(FlowGraph *G)
     {
         marked_dead[i] = 0;
     }
+    //This will continue analysis until there is no change detected
+    //This is required as some dead code detected in first iter will lead to some edge deletion
+    //Now this could potentially create more dead code,hence we iterate till no change
     do
     {
         change=0;
