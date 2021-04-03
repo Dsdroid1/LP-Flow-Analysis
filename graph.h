@@ -35,5 +35,6 @@ sc AddBasicBlock(FlowGraph *G,int leader,int end_stmt);
 sc AddEdge(FlowGraph *G,int startBlock,int endBlock);
 void PrintGraph(FlowGraph *G);
 void DisplayLeaderFromGraph(FlowGraph *G);
+void DeleteGraph(FlowGraph *G);
 
 #endif

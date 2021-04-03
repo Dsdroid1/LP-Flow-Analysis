@@ -104,3 +104,19 @@ void DisplayLeaderFromGraph(FlowGraph *G)
         printf("\nLeader of Basic Block %d is stmt no. %d",i,G->Nodelist[i].leader);
     }
 }
+
+void DeleteGraph(FlowGraph *G)
+{
+    for(int i=0;i<G->N;i++)
+    {
+        LinkList *head = G->Nodelist[i].edges,*trav;
+        G->Nodelist[i].edges = NULL;
+        trav=head;
+        while(trav != NULL)
+        {
+            head=trav;
+            trav=trav->next;
+            free(head);
+        }
+    }
+}

@@ -188,6 +188,7 @@ void main()
         free(TABLE[i]);
     }
     free(TABLE);
+    DeleteGraph(&G);
     printf("\nEnd");
     //Remember to free the table
 }
