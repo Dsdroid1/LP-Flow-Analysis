@@ -37,4 +37,9 @@ void PrintGraph(FlowGraph *G);
 void DisplayLeaderFromGraph(FlowGraph *G);
 void DeleteGraph(FlowGraph *G);
 
+//Can create special nodes(start,with leader=-1, and end with end_stmt=-1)
+//This can be used to support multiple end points for program
+//For instance,via some 3 address instruction,say->HALT
+//Or another design choice can be to add edges to special invalid indices,say -1 for edge from current to program exit block
+
 #endif
