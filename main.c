@@ -90,6 +90,19 @@ int* GetLeaders(char **TABLE,int TAB_LEN)
    return isLeader;
 }
 
+void DisplayBBInfo(FlowGraph *G,char **TABLE)
+{
+    for(int i=0;i<G->N;i++)
+    {
+        //For every basic block
+        printf("\n <BB%d> Start ",i);
+        for(int j=G->Nodelist[i].leader;j<=G->Nodelist[i].end_stmt;j++)
+        {
+            printf("\nStmt %d - %s",j,TABLE[j]);
+        }
+        printf("\n<BB%d> end",i);
+    }
+}
 
 void main()
 {
@@ -182,6 +195,8 @@ void main()
     }
     printf("\nBasic Block Info----------------");
     PrintGraph(&G);
+    printf("\nFormatted Code in BBs");
+    DisplayBBInfo(&G,TABLE);
     free(leaders);
     for(int i=0;i<TAB_LEN;i++)
     {
