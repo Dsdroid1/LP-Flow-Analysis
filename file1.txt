@@ -6,6 +6,10 @@ t3 := 4* i
 t4 := b[t3]
 if t3>1 goto 10
 t5 := t2*t4
+goto 6
+x := y
+y := x
+goto 13
 t6 := prod+t5
 prod := t6
 t7 := i+1

@@ -127,35 +127,51 @@ void DeadCodeElimination(FlowGraph *G)
 {
     //For any basic block except BB0,if it does not have an incoming edge,then it is dead code
     //Later,maybe also remove the deadcode BB from the graph 
+    int change=0;
     int *incoming=(int *)malloc(sizeof(int)*(G->N));
+    int *marked_dead=(int *)malloc(sizeof(int)*(G->N));
     for(int i=0;i<G->N;i++)
     {
-        incoming[i] = 0;
+        marked_dead[i] = 0;
     }
-    for(int i=0;i<G->N;i++)
+    do
     {
-        LinkList *edgeList = G->Nodelist[i].edges;
-        while(edgeList != NULL)
+        change=0;
+        for(int i=0;i<G->N;i++)
         {
-            incoming[edgeList->BasicBlockIndex]++;
-            edgeList=edgeList->next;
+            incoming[i] = 0;
         }
-    }
-    printf("\n---Dead Code Analysis-------------------");
-    int deadcode=0;
-    for(int i=1;i<G->N;i++)
-    {
-        if(incoming[i] == 0)
+        for(int i=0;i<G->N;i++)
         {
-            deadcode = 1;
-            printf("\n BB%d is dead code!",i);
-            DeleteDeadBlock(G,i);
+            if(marked_dead[i]==0)
+            {
+                LinkList *edgeList = G->Nodelist[i].edges;
+                while(edgeList != NULL)
+                {
+                    incoming[edgeList->BasicBlockIndex]++;
+                    edgeList=edgeList->next;
+                }
+            }
         }
-    }
-    if(deadcode == 0)
-    {
-        printf("\nNo dead code found");
-    }
+        //printf("\n---Dead Code Analysis-------------------");
+        int deadcode=0;
+        for(int i=1;i<G->N;i++)
+        {
+            if(incoming[i] == 0 && marked_dead[i]==0)
+            {
+                deadcode = 1;
+                marked_dead[i] = 1;
+                change=1;
+                printf("\n BB%d is dead code!",i);
+                DeleteDeadBlock(G,i);
+            }
+        }
+        if(deadcode == 0)
+        {
+            //printf("\nNo dead code found");
+        }
+    }while(change==1);
+    free(incoming);
 }
 
 void main()
@@ -268,6 +284,7 @@ void main()
     DisplayBBInfo(&G,TABLE);
     DeadCodeElimination(&G);
     //PrintGraph(&G);
+    printf("\nAfter Deadcode Elimination------------");
     DisplayBBInfo(&G,TABLE);
     free(leaders);
     for(int i=0;i<TAB_LEN;i++)
