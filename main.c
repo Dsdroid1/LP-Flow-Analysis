@@ -32,6 +32,7 @@ char ** StmtTable(char *filename,int *TAB_LEN)
         fp = fopen(filename,"r");
         while(fgets(DATA,20,fp) != NULL){
             //Trim DATA,of whitespaces(\n mainly) ,here,before strdup()
+            //Here while trimming,can also add functionality to 'ignore' comments
             int i=0;
             while(DATA[i]!='\0' && DATA[i]!='\n')
             {
@@ -116,6 +117,40 @@ void DisplayBBInfo(FlowGraph *G,char **TABLE)
             printf("\nStmt %d - %s",j,TABLE[j]);
         }
         printf("\n <BB%d> end",i);
+    }
+}
+
+void DeadCodeElimination(FlowGraph *G)
+{
+    //For any basic block except BB0,if it does not have an incoming edge,then it is dead code
+    //Later,maybe also remove the deadcode BB from the graph 
+    int *incoming=(int *)malloc(sizeof(int)*(G->N));
+    for(int i=0;i<G->N;i++)
+    {
+        incoming[i] = 0;
+    }
+    for(int i=0;i<G->N;i++)
+    {
+        LinkList *edgeList = G->Nodelist[i].edges;
+        while(edgeList != NULL)
+        {
+            incoming[edgeList->BasicBlockIndex]++;
+            edgeList=edgeList->next;
+        }
+    }
+    printf("\n---Dead Code Analysis-------------------");
+    int deadcode=0;
+    for(int i=1;i<G->N;i++)
+    {
+        if(incoming[i] == 0)
+        {
+            deadcode = 1;
+            printf("\n BB%d is dead code!",i);
+        }
+    }
+    if(deadcode == 0)
+    {
+        printf("\nNo dead code found");
     }
 }
 
@@ -227,6 +262,7 @@ void main()
     PrintGraph(&G);
     printf("\n Formatted Code in BBs");
     DisplayBBInfo(&G,TABLE);
+    DeadCodeElimination(&G);
     free(leaders);
     for(int i=0;i<TAB_LEN;i++)
     {
