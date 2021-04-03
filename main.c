@@ -15,7 +15,7 @@ char ** StmtTable(char *filename,int *TAB_LEN)
     {
         while(fgets(DATA,20,fp) != NULL){
             numLines++;
-            maxLineLen = (maxLineLen<strlen(DATA))?strlen(DATA):maxLineLen;
+            //maxLineLen = (maxLineLen<strlen(DATA))?strlen(DATA):maxLineLen;
         }
         //Metadata of file gathered,now create the table
         fclose(fp);
@@ -23,6 +23,13 @@ char ** StmtTable(char *filename,int *TAB_LEN)
         int tabIndex=0;
         fp = fopen(filename,"r");
         while(fgets(DATA,20,fp) != NULL){
+            //Trim DATA,of whitespaces(\n mainly) ,here,before strdup()
+            int i=0;
+            while(DATA[i]!='\0' && DATA[i]!='\n')
+            {
+                i++;
+            }
+            DATA[i]='\0';
             TABLE[tabIndex] = strdup(DATA);
             tabIndex++;
         }
@@ -100,7 +107,7 @@ void DisplayBBInfo(FlowGraph *G,char **TABLE)
         {
             printf("\nStmt %d - %s",j,TABLE[j]);
         }
-        printf("\n<BB%d> end",i);
+        printf("\n <BB%d> end",i);
     }
 }
 
@@ -193,9 +200,9 @@ void main()
         
         block_index++;
     }
-    printf("\nBasic Block Info----------------");
+    printf("\n Basic Block Info----------------");
     PrintGraph(&G);
-    printf("\nFormatted Code in BBs");
+    printf("\n Formatted Code in BBs");
     DisplayBBInfo(&G,TABLE);
     free(leaders);
     for(int i=0;i<TAB_LEN;i++)
