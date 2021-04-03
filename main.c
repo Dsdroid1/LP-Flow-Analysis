@@ -59,9 +59,9 @@ int* GetLeaders(char **TABLE,int TAB_LEN)
    if(isLeader!=NULL)
    {
        isLeader[0]=1;//Rule a
-       int index=1;
+       int index=0;
        char *searchptr;
-        //Rule 
+        //Rule b,c
         while(index<TAB_LEN)
         {
             searchptr = strstr(TABLE[index],"goto");
@@ -145,14 +145,17 @@ void main()
         if(searchptr != NULL)
         {
             int jump_to;
+            searchptr=searchptr+4;//Advannce the goto part
             sscanf(searchptr,"%d",&jump_to);
             //Search which block does this stmt. no. belongs
             //We know that target stmt will be a leader
-            for(int i=0;i<G.N;i++)
+            int found=0;
+            for(int i=0;i<G.N && found==0;i++)
             {
                 if(G.Nodelist[i].leader==jump_to)
                 {
                     target_block=i;
+                    found=0;
                 }
             }
             AddEdge(&G,block_index,target_block);
@@ -162,11 +165,13 @@ void main()
         //i.e. code will/can fall through
         if(end != TAB_LEN-1)
         {
-            for(int i=0;i<G.N;i++)
+            int found=0;
+            for(int i=0;i<G.N && found==0;i++)
             {
                 if(G.Nodelist[i].leader==end+1)
                 {
                     target_block=i;
+                    found=1;
                 }
             }
         
