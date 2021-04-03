@@ -111,12 +111,15 @@ void DisplayBBInfo(FlowGraph *G,char **TABLE)
     for(int i=0;i<G->N;i++)
     {
         //For every basic block
-        printf("\n <BB%d> Start ",i);
-        for(int j=G->Nodelist[i].leader;j<=G->Nodelist[i].end_stmt;j++)
+        if( G->Nodelist[i].leader!=-1 && G->Nodelist[i].end_stmt!=-1)//Not deadcode
         {
-            printf("\nStmt %d - %s",j,TABLE[j]);
+            printf("\n <BB%d> Start ",i);
+            for(int j=G->Nodelist[i].leader;j<=G->Nodelist[i].end_stmt;j++)
+            {
+                printf("\nStmt %d - %s",j,TABLE[j]);
+            }
+            printf("\n <BB%d> end",i);
         }
-        printf("\n <BB%d> end",i);
     }
 }
 
@@ -146,6 +149,7 @@ void DeadCodeElimination(FlowGraph *G)
         {
             deadcode = 1;
             printf("\n BB%d is dead code!",i);
+            DeleteDeadBlock(G,i);
         }
     }
     if(deadcode == 0)
@@ -263,6 +267,8 @@ void main()
     printf("\n Formatted Code in BBs");
     DisplayBBInfo(&G,TABLE);
     DeadCodeElimination(&G);
+    //PrintGraph(&G);
+    DisplayBBInfo(&G,TABLE);
     free(leaders);
     for(int i=0;i<TAB_LEN;i++)
     {

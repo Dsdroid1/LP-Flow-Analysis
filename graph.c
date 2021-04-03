@@ -86,12 +86,19 @@ void PrintGraph(FlowGraph *G)
     LinkList *node;
     for(int i=0;i<num_nodes;i++)
     {
-        printf("\nBasic Block %d starts at stmt %d and ends at stmt %d",i,G->Nodelist[i].leader,G->Nodelist[i].end_stmt);
-        node=G->Nodelist[i].edges;
-        while(node != NULL)
+        if(G->Nodelist[i].leader!=-1 && G->Nodelist[i].end_stmt!=-1)//Not dead code
         {
-            printf("\nBasic Block %d has an edge to Basic Block %d",i,node->BasicBlockIndex);
-            node=node->next;
+            printf("\nBasic Block %d starts at stmt %d and ends at stmt %d",i,G->Nodelist[i].leader,G->Nodelist[i].end_stmt);
+            node=G->Nodelist[i].edges;
+            while(node != NULL)
+            {
+                printf("\nBasic Block %d has an edge to Basic Block %d",i,node->BasicBlockIndex);
+                node=node->next;
+            }
+        }
+        else
+        {
+            printf("\nBasic Block %d detected as Dead Code",i);   
         }
     }
 }
@@ -101,7 +108,11 @@ void DisplayLeaderFromGraph(FlowGraph *G)
     int num_nodes = G->N;
     for (int i=0;i<num_nodes;i++)
     {
-        printf("\nLeader of Basic Block %d is stmt no. %d",i,G->Nodelist[i].leader);
+        if(G->Nodelist[i].leader!=-1 && G->Nodelist[i].end_stmt!=-1)//Noe deadcode
+        {
+            printf("\nLeader of Basic Block %d is stmt no. %d",i,G->Nodelist[i].leader);
+        }
+        
     }
 }
 
@@ -119,4 +130,29 @@ void DeleteGraph(FlowGraph *G)
             free(head);
         }
     }
+}
+
+sc DeleteDeadBlock(FlowGraph *G,int deadBlockIndex)
+{
+    //Free all edges of the dead block
+    sc retval = SUCCESS;
+    if(deadBlockIndex<G->N && deadBlockIndex>0)//BB0 cant be dead
+    {
+        LinkList *edges = G->Nodelist[deadBlockIndex].edges;
+        LinkList *trav=edges;
+        while(trav != NULL)
+        {
+            edges=trav;
+            trav=trav->next;
+            free(edges);
+        }
+        G->Nodelist[deadBlockIndex].edges = NULL;
+        G->Nodelist[deadBlockIndex].leader = -1;
+        G->Nodelist[deadBlockIndex].end_stmt = -1;
+    }
+    else
+    {
+        retval = FAILURE;
+    }
+    return retval;
 }

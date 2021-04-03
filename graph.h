@@ -36,6 +36,7 @@ sc AddEdge(FlowGraph *G,int startBlock,int endBlock);
 void PrintGraph(FlowGraph *G);
 void DisplayLeaderFromGraph(FlowGraph *G);
 void DeleteGraph(FlowGraph *G);
+sc DeleteDeadBlock(FlowGraph *G,int deadBlockIndex);
 
 //Can create special nodes(start,with leader=-1, and end with end_stmt=-1)
 //This can be used to support multiple end points for program
