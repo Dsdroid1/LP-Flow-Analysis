@@ -3,6 +3,14 @@
 #include<stdlib.h>
 #include"graph.h"
 
+//Local Optimisations Possible
+//Algebraic Simplification
+//Constant Folding
+//Dead code elimination
+//common-subexpression elimination
+//copy propagation
+//
+
 //Read a file and convert it into a stmt table(separate by stmts)
 char ** StmtTable(char *filename,int *TAB_LEN)
 {
@@ -194,8 +202,23 @@ void main()
                     found=1;
                 }
             }
-        
-            AddEdge(&G,block_index,target_block);
+            //Maybe try to avoid fall through edge for unconditional goto
+            //We could maybe check if 'if' exists along with goto,only then add edge
+            //Else for unconditional goto,do not add fall through edge
+            if(strstr(TABLE[G.Nodelist[block_index].end_stmt],"goto") != NULL)
+            {
+                //Conservatively checking for 'if'
+                if(strstr(TABLE[G.Nodelist[block_index].end_stmt],"if") != NULL)
+                {
+                    //if is present with goto,then add fall through edge
+                    AddEdge(&G,block_index,target_block);
+                }
+            } 
+            else
+            {
+                //Add fall through edge(no goto)
+                AddEdge(&G,block_index,target_block);
+            }
         }
         
         block_index++;

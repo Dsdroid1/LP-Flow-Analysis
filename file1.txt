@@ -10,7 +10,7 @@ t6 := prod+t5
 prod := t6
 t7 := i+1
 i := t7
-if i<=20 goto 2
+goto 2
 x := 10
 y := 20
 if prod>100 goto 5
