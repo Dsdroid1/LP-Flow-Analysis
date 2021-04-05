@@ -28,6 +28,7 @@ typedef struct FlowGraph
 }FlowGraph;
 
 typedef enum {FAILURE,SUCCESS} sc;
+typedef enum {TRUE,FALSE} bool;
 
 //---GRAPH USAGE FNS----------------------
 void InitGraph(FlowGraph *G);
@@ -37,7 +38,7 @@ void PrintGraph(FlowGraph *G);
 void DisplayLeaderFromGraph(FlowGraph *G);
 void DeleteGraph(FlowGraph *G);
 sc DeleteDeadBlock(FlowGraph *G,int deadBlockIndex);
-
+void Dominates(FlowGraph *G,int nodeIndex); // tells what block are dominated by nodeIndex block
 //Can create special nodes(start,with leader=-1, and end with end_stmt=-1)
 //This can be used to support multiple end points for program
 //For instance,via some 3 address instruction,say->HALT
