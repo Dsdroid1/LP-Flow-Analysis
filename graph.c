@@ -189,11 +189,6 @@ void DFS(FlowGraph *G,int v,bool* visited,int blockToSkip){
 
 
 
-
-
-
-
-
 void Dominates(FlowGraph *G,int nodeIndex){
     /*
         Dominates(G,X) tells you what blocks are dominated by Block X

@@ -178,6 +178,65 @@ void DeadCodeElimination(FlowGraph *G)
     free(marked_dead);
 }
 
+
+void LocalOptimizer(char **TABLE,int TAB_LEN)
+{
+    /* trying for simple statement elimination like
+        x := x + 0
+        x := x * 1
+        Eliminating these instructions are great optimizations as we are 
+        removing an entire instruction.
+        Another optimization could be 
+        x := x * 8  => x := x << 3
+        x := x * 15  => t := x << 4; x := t - x  
+    */
+   if(TABLE != NULL)
+    {
+        for(int i=0;i<TAB_LEN;i++)
+        {
+            char LHS,OP1,OP2,OP;
+            char* temp =(char*)malloc(strlen(TABLE[i])*sizeof(char));
+            int j=0;
+            int k=0;
+            while(TABLE[i][j])
+            {
+                // removing spaces like x := 1 + 2 ==> x:=1+2 for easier operations
+                if(TABLE[i][j]!=' ')
+                {
+                    temp[k] = TABLE[i][j];
+                    k++;
+                }
+                j++;   
+            }
+            //find out a  way to find these corresponding tokens
+            // LHS = //TODO;
+            // OP1 = //TODO;
+            // OP2 = //TODO;
+            // OP = //TODO;
+            
+            // for x:=x*1
+            if((LHS == OP1 && OP=='*' && OP2=='1') || (LHS == OP2 && OP=='*' && OP1=='1') )
+            {
+                //delete the statement from the table
+                TABLE[i] = "\0";
+            }
+            
+            // for x:=x+0
+            if((LHS == OP1 && OP=='+' && OP2=='0') || (LHS == OP2 && OP=='+' && OP1=='0') )
+            {
+                //delete the statement from the table
+                TABLE[i] = "\0";
+            }
+
+            //have to implement for right and left shift
+            
+
+        }
+    }
+
+}
+
+
 void main()
 {
     char filename[20]="file1.txt";
@@ -291,6 +350,7 @@ void main()
     printf("\nAfter Deadcode Elimination------------");
     DisplayBBInfo(&G,TABLE);
     Dominates(&G,3);
+    LocalOptimizer(TABLE,TAB_LEN);
     free(leaders);
     for(int i=0;i<TAB_LEN;i++)
     {
