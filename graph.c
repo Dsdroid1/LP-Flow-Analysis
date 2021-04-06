@@ -156,3 +156,69 @@ sc DeleteDeadBlock(FlowGraph *G,int deadBlockIndex)
     }
     return retval;
 }
+
+
+
+void DFS(FlowGraph *G,int v,bool* visited,int blockToSkip){ 
+    // blockToSkip is the block to ignore while doing dfs, very application specific
+    // to do normal dfs put blockToSkip as -1.
+    if(v==blockToSkip)
+    {
+        return;
+    } 
+    if(G->Nodelist[v].leader!=-1 && G->Nodelist[v].end_stmt!=-1){
+        visited[v] = TRUE;
+        //visit all neighbours of v
+        LinkList* temp = G->Nodelist[v].edges;
+        while(temp!=NULL)
+        {
+            if(visited[temp->BasicBlockIndex] == FALSE)
+            {
+                DFS(G,temp->BasicBlockIndex,visited,blockToSkip);
+            }
+            temp=temp->next;
+        }
+
+    }
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+void Dominates(FlowGraph *G,int nodeIndex){
+    /*
+        Dominates(G,X) tells you what blocks are dominated by Block X
+    */
+   printf("Block %d dominates\n",nodeIndex);
+   bool *visited = (bool*)malloc(MAX_NO_OF_VERTICES*sizeof(bool));
+   bool *visited_after = (bool*)malloc(MAX_NO_OF_VERTICES*sizeof(bool));
+   for(int i=0;i<MAX_NO_OF_VERTICES;i++)
+   {
+       visited[i]=FALSE;
+       visited_after[i]=FALSE;
+   }
+   DFS(G,0,visited,-1);
+   DFS(G,0,visited_after,nodeIndex); //skip the block to see what it dominates
+   for(int i=0;i<MAX_NO_OF_VERTICES;i++)
+   {
+       if(visited[i]==TRUE && visited_after[i]==FALSE)
+       {
+           // nodeIndex dominates block i 
+           printf("Block %d\n",i);
+       }
+   }
+   //freeing resources
+   free(visited);
+   free(visited_after);
+   
+
+} 

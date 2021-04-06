@@ -118,7 +118,7 @@ void DisplayBBInfo(FlowGraph *G,char **TABLE)
             {
                 printf("\nStmt %d - %s",j,TABLE[j]);
             }
-            printf("\n <BB%d> end",i);
+            printf("\n <BB%d> end\n",i);
         }
     }
 }
@@ -289,6 +289,7 @@ void main()
     //PrintGraph(&G);
     printf("\nAfter Deadcode Elimination------------");
     DisplayBBInfo(&G,TABLE);
+    Dominates(&G,3);
     free(leaders);
     for(int i=0;i<TAB_LEN;i++)
     {
