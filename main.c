@@ -251,8 +251,12 @@ void DisplayNaturalLoops(FlowGraph *G)
                 for(int idx=0;idx<G->N;idx++)
                 {
                     bool *reachable = (bool*)malloc(G->N*sizeof(bool));
+                    for(int set=0;set<G->N;set++)
+                    {
+                        reachable[set]=FALSE;
+                    }
                     DFS(G,idx,reachable,j);
-                    printf("Reachable:%d",reachable[i]);
+                    //printf("Reachable:%d",reachable[i]);
                     if(reachable[i]==TRUE)
                     {
                         nodeList[idx]=1;
