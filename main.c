@@ -175,6 +175,7 @@ void DeadCodeElimination(FlowGraph *G)
         }
     }while(change==1);
     free(incoming);
+    free(marked_dead);
 }
 
 void main()
