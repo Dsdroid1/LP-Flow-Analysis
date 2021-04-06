@@ -178,6 +178,112 @@ void DeadCodeElimination(FlowGraph *G)
     free(marked_dead);
 }
 
+void DisplayNaturalLoops(FlowGraph *G)
+{
+    //Get the back edges
+    //For every arc from i to j, where j dom i
+    //Then for every such back edge, remove j from graph and see which nodes can reach i
+    //All such nodes make up the natural loop
+
+    //Step 1 : Get the dominator table
+    int ** dominates;
+    dominates = (int **)malloc(sizeof(int *)*G->N);
+    for(int i=0;i<G->N;i++)
+    {
+        dominates[i]=(int *)malloc(sizeof(int)*G->N);
+        for(int j=0;j<G->N;j++)
+        {
+            dominates[i][j]=0;
+        }
+    }
+    bool *visited = (bool*)malloc(G->N*sizeof(bool));
+    bool *visited_after = (bool*)malloc(G->N*sizeof(bool));
+    for(int j=0;j<G->N;j++)
+    {
+        visited[j]=FALSE;
+    }
+    DFS(G,0,visited,-1);
+    for(int i=0;i<G->N;i++)
+    {
+        //For every node
+        for(int j=0;j<G->N;j++)
+        {
+            
+            visited_after[j]=FALSE;
+        }
+        
+        DFS(G,0,visited_after,i); //skip the block to see what it dominates
+        for(int j=0;j<G->N;j++)
+        {
+            if(visited[j]==TRUE && visited_after[j]==FALSE)
+            {
+            // i dominates block j 
+                dominates[i][j] = 1;
+            }
+        }
+    }
+    //dominates is ready
+    //Now look for back edges
+
+    for(int i=0;i<G->N;i++)
+    {
+        LinkList *edges = G->Nodelist[i].edges;
+        while(edges!=NULL)
+        {
+            // Edge is from i to edges->BasicBlockIndex
+            //Check if j dominates i
+            int j=edges->BasicBlockIndex;
+            if(dominates[j][i]==1)
+            {
+                //Back edge detected!
+                //Natural loop represented as edge from i to j
+                //Check what all others belong to this
+                int *nodeList;
+                nodeList=(int *)malloc(sizeof(int)*G->N);
+                for(int idx;idx<G->N;idx++)
+                {
+                    nodeList[idx]=0;
+                }
+                nodeList[i]=1;
+                nodeList[j]=1;
+
+                //Check what nodes can reach i without going via j
+                for(int idx=0;idx<G->N;idx++)
+                {
+                    bool *reachable = (bool*)malloc(G->N*sizeof(bool));
+                    DFS(G,idx,reachable,j);
+                    printf("Reachable:%d",reachable[i]);
+                    if(reachable[i]==TRUE)
+                    {
+                        nodeList[idx]=1;
+                    }
+                    free(reachable);
+                }
+                printf("\nNatural Loop: %d -> %d consists of blocks ",i,j);
+                for(int idx=0;idx<G->N;idx++)
+                {
+                    if(nodeList[idx]==1)
+                    {
+                        printf("%d ",idx);
+                    }
+                }
+
+                free(nodeList);
+            }
+            edges=edges->next;
+        }
+        
+    }
+
+    free(visited);
+    free(visited_after);
+    for(int i=0;i<G->N;i++)
+    {
+        free(dominates[i]);
+    }
+    free(dominates);
+}
+
 void main()
 {
     char filename[20]="file1.txt";
@@ -291,6 +397,7 @@ void main()
     printf("\nAfter Deadcode Elimination------------");
     DisplayBBInfo(&G,TABLE);
     Dominates(&G,3);
+    DisplayNaturalLoops(&G);
     free(leaders);
     for(int i=0;i<TAB_LEN;i++)
     {
