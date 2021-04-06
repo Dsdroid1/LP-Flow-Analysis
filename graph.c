@@ -214,6 +214,4 @@ void Dominates(FlowGraph *G,int nodeIndex){
    //freeing resources
    free(visited);
    free(visited_after);
-   
-
 } 

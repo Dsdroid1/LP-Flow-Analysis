@@ -43,5 +43,5 @@ void Dominates(FlowGraph *G,int nodeIndex); // tells what block are dominated by
 //This can be used to support multiple end points for program
 //For instance,via some 3 address instruction,say->HALT
 //Or another design choice can be to add edges to special invalid indices,say -1 for edge from current to program exit block
-
+void DFS(FlowGraph *G,int v,bool* visited,int blockToSkip);
 #endif
