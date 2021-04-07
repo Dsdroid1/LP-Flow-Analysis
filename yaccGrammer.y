@@ -18,27 +18,22 @@ int yylex();
 
 %%
 
-line:   assignment "\n" line
+line:   line assignment "\n" 
         {
             printf("Assignment detected");
         }
         |
-        unconditional_goto "\n" line
+        line unconditional_goto "\n"
         {
 
         }
         |
-        conditional_goto "\n" line
+        line conditional_goto "\n"
         {
 
         }
         |
         "\n"
-        {
-
-        }
-        |
-        END
         {
 
         }

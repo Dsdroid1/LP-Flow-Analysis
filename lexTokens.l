@@ -20,6 +20,6 @@ int yylex();
 [>=<]   return COMP;
 ":="    return ASSIGNMENT;
 [a-zA-Z][a-zA-Z0-9]*(\[[0-9]+\])? return VAR;
-
+.* ;
 %%
 int yywrap (void) {return 1;}

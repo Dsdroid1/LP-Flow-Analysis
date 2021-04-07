@@ -1,7 +1,7 @@
 all: Calculator
 
 Calculator: y.tab.c lex.yy.c
-	gcc lex.yy.c y.tab.c -o Calculator -lm	
+	gcc -g lex.yy.c y.tab.c -o Calculator -lm	
 
 y.tab.c: yaccGrammer.y
 	yacc -d yaccGrammer.y
