@@ -210,9 +210,10 @@ void LocalOptimizer(char **TABLE, int TAB_LEN)
                 }
                 j++;
             }
+            temp[k] = '\0';
             //somehow temp is coming out to be x = 1+1U (notice the U in the last,undesirable)
             //so i am doing a workaround and just ignoring the last element.
-            temp[strlen(temp) - 1] = '\0';
+            // temp[strlen(temp)] = '\0';
             //find out a  way to find these corresponding tokens
             //check if + or - or * or /
             char OP;
