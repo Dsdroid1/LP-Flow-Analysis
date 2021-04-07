@@ -406,7 +406,7 @@ void DisplayNaturalLoops(FlowGraph *G)
 
 void main()
 {
-    char filename[20] = "file2.txt";
+    char filename[20] = "file1.txt";
     char **TABLE = NULL;
     int TAB_LEN = 0;
     printf("Starting program");
