@@ -14,35 +14,36 @@ int yylex();
 %token IF
 %token END
 %token GOTO
+%token EOL
 %start line
 
 %%
 
-line:   line assignment "\n" 
+line:   
+        EOL
+        {
+            printf("Program end");
+        }
+        | 
+        assignment EOL
         {
             printf("Assignment detected");
         }
         |
-        line unconditional_goto "\n"
+        line unconditional_goto 
         {
 
         }
         |
-        line conditional_goto "\n"
+        line conditional_goto
         {
 
         }
-        |
-        "\n"
-        {
-
-        }
-        ;
 
 
-assignment:     VAR ASSIGNMENT simple
+assignment:     VAR ASSIGNMENT simple EOL
                 {
-
+                    printf("Assignment");
                 }   
                 ;     
 
@@ -65,7 +66,7 @@ simple:     vars_only
             |
             const_only
             {
-
+                printf("COnst only");
             }
             |
             mix
@@ -103,7 +104,7 @@ mix:    VAR OP CONST
 int main(void)
 {
     extern FILE *yyin;
-    yyin=fopen("file.txt","r");
+    yyin=fopen("file2.txt","r");
     return yyparse();
 }
 
