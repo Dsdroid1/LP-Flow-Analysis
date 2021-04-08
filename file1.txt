@@ -5,17 +5,17 @@ t1 := 4* i
 t2 := a[t1]
 t3 := 4* i
 t4 := b[t3]
-if t3>1 goto 10
+if t3>1 goto 11
 t5 := t2*t4
-goto 6
+goto 7
 x := y
 y := x
-goto 13
+goto 14
 t6 := prod+t5
 prod := t6
 t7 := i+1
 i := t7
-goto 2
+goto 3
 x := 10
 y := 20
-if prod>100 goto 5
+if prod>100 goto 6

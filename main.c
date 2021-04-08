@@ -98,6 +98,8 @@ int *GetLeaders(char **TABLE, int TAB_LEN)
                 searchptr = searchptr + 4; //Advannce the goto part
                 int jump_to;
                 sscanf(searchptr, "%d", &jump_to);
+                //Assume that file will have goto stmt index,starting index from 1
+                jump_to--;
                 if (jump_to < TAB_LEN)
                 {
                     isLeader[jump_to] = 1;
@@ -460,6 +462,8 @@ void main()
             int jump_to;
             searchptr = searchptr + 4; //Advannce the goto part
             sscanf(searchptr, "%d", &jump_to);
+            jump_to--;
+            //Assume stmt indices start from 1 for file
             //Search which block does this stmt. no. belongs
             //We know that target stmt will be a leader
             int found = 0;
