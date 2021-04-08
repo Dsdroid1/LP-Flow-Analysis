@@ -276,7 +276,7 @@ void LocalOptimizer(char **TABLE, int TAB_LEN)
                 else if (OP == '-')
                 {
                     OP1 = strtok(dup_RHS, "-");
-                    OP2 = strtok(NULL, "");
+                    OP2 = strtok(NULL, "-");
                 }
                 else if (OP == '*')
                 {
@@ -291,6 +291,10 @@ void LocalOptimizer(char **TABLE, int TAB_LEN)
                 // OP1 = strdup(strtok(temp,"+-/*"));
                 // OP2 = strdup(temp);
                 // OP = strdup(temp-1);
+                if(RHS[0]=='-')
+                {
+                    continue;
+                }
                 if(isnumber(OP1) && isnumber(OP2))
                 {
                     //printf("\n2 numbers at stmt %d",i);
@@ -300,8 +304,7 @@ void LocalOptimizer(char **TABLE, int TAB_LEN)
                     o2=atoi(OP2);
                     if(RHS[0]=='-')
                     {
-                        o1=-o1;
-                        printf("\n%s %s",OP1,OP2);
+                        continue;//Avoid this stmt with neg values
                     }
                     if(strstr(OP2,"-"))
                     {
