@@ -1,21 +1,21 @@
 prod := 0
 i := 1
 i := i * 1
-t1 := 4* i
+t1 := 4* 3
 t2 := a[t1]
 t3 := 4* i
 t4 := b[t3]
-if t3>1 goto 11
+if t3>1 goto 10
 t5 := t2*t4
-goto 7
-x := y
-y := x
-goto 14
+goto 6
+x := 0+y
+y := x*1
+goto 13
 t6 := prod+t5
 prod := t6
 t7 := i+1
 i := t7
-goto 3
+goto 2
 x := 10
 y := 20
-if prod>100 goto 6
+if prod>100 goto 5

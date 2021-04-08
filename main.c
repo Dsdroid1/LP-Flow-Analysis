@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include<ctype.h>
 #include "graph.h"
 
 //Local Optimisations Possible
@@ -99,7 +100,8 @@ int *GetLeaders(char **TABLE, int TAB_LEN)
                 int jump_to;
                 sscanf(searchptr, "%d", &jump_to);
                 //Assume that file will have goto stmt index,starting index from 1
-                jump_to--;
+                //jump_to--;
+                //Currently,0 based index for files,is allowed,uncomment above line to change that
                 if (jump_to < TAB_LEN)
                 {
                     isLeader[jump_to] = 1;
@@ -181,6 +183,20 @@ void DeadCodeElimination(FlowGraph *G)
     } while (change == 1);
     free(incoming);
     free(marked_dead);
+}
+
+int isnumber(char *str)
+{
+    int len=strlen(str);
+    int retval=1;
+    for(int i=0;i<len && retval==1;i++)
+    {
+        if(!(str[i]<='9' && str[i]>='0'))
+        {
+            retval=0;
+        }
+    }
+    return retval;
 }
 
 void LocalOptimizer(char **TABLE, int TAB_LEN)
@@ -277,20 +293,90 @@ void LocalOptimizer(char **TABLE, int TAB_LEN)
                 // OP1 = strdup(strtok(temp,"+-/*"));
                 // OP2 = strdup(temp);
                 // OP = strdup(temp-1);
-
-                // for x:=x*1
-                if ((strcmp(LHS, OP1) == 0 && OP == '*' && strcmp(OP2, "1") == 0) || (strcmp(LHS, OP2) == 0 && OP == '*' && strcmp(OP1, "1") == 0))
+                if(isnumber(OP1) && isnumber(OP2))
                 {
-                    //delete the statement from the table
-                    TABLE[i][0] = '\0';
+                    //printf("\n2 numbers at stmt %d",i);
+                    //Evaluate expression
+                    if(OP=='+')
+                    {
+                        TABLE[i][0]='\0';
+                        int exp=atoi(OP1)+atoi(OP2);
+                        //itoa(exp,TABLE[i],10);
+                        sprintf(TABLE[i],"%s:=%d",LHS,exp);
+                    }
+                    else if(OP=='-')
+                    {
+                        TABLE[i][0]='\0';
+                        int exp=atoi(OP1)-atoi(OP2);
+                        //itoa(exp,TABLE[i],10);
+                        sprintf(TABLE[i],"%s:=%d",LHS,exp);
+                    }
+                    else if(OP=='*')
+                    {
+                        TABLE[i][0]='\0';
+                        int exp=atoi(OP1)*atoi(OP2);
+                        //itoa(exp,TABLE[i],10);
+                        sprintf(TABLE[i],"%s:=%d",LHS,exp);
+                    }
+                    else if(OP=='/')
+                    {
+                        TABLE[i][0]='\0';
+                        int exp=atoi(OP1)/atoi(OP2);
+                        //itoa(exp,TABLE[i],10);
+                        sprintf(TABLE[i],"%s:=%d",LHS,exp);
+                    }
                 }
+                else{
+                    //Do below optim if OP1 and OP2 are not ints
+                    if ((strcmp(LHS, OP1) == 0 && OP == '*' && strcmp(OP2, "1") == 0) || (strcmp(LHS, OP2) == 0 && OP == '*' && strcmp(OP1, "1") == 0))
+                    {
+                        //delete the statement from the table
+                        TABLE[i][0] = '\0';
+                    }
 
-                // for x:=x+0
-                if ((strcmp(LHS, OP1) == 0 && OP == '+' && strcmp(OP2, "0") == 0) || (strcmp(LHS, OP2) == 0 && OP == '+' && strcmp(OP1, "0") == 0))
-                {
-                    //delete the statement from the table
-                    TABLE[i][0] = '\0';
+                    // for x:=x+0
+                    if ((strcmp(LHS, OP1) == 0 && OP == '+' && strcmp(OP2, "0") == 0) || (strcmp(LHS, OP2) == 0 && OP == '+' && strcmp(OP1, "0") == 0))
+                    {
+                        //delete the statement from the table
+                        TABLE[i][0] = '\0';
+                    }
+
+                    // for y:=0+x
+                    if ((strcmp(LHS, OP1) != 0  && strcmp(OP1,"0")==0 && OP == '+' ))
+                    {
+                        TABLE[i][0] = '\0';
+                        //printf("%s %s",LHS,OP2);
+                        strcat(TABLE[i],LHS);
+                        strcat(TABLE[i],":=");
+                        strcat(TABLE[i],OP2);
+                    }
+                    //y:=x+0
+                    if(strcmp(LHS, OP1) != 0  && strcmp(OP2,"0")==0 && OP == '+' )
+                    {
+                        TABLE[i][0] = '\0';
+                        //printf("%s %s",LHS,OP2);
+                        strcat(TABLE[i],LHS);
+                        strcat(TABLE[i],":=");
+                        strcat(TABLE[i],OP1);
+                    }
+                    //y:=x*1
+                    if(strcmp(LHS, OP1) != 0  && strcmp(OP2,"1")==0 && OP == '*' )
+                    {
+                        TABLE[i][0] = '\0';
+                        strcat(TABLE[i],LHS);
+                        strcat(TABLE[i],":=");
+                        strcat(TABLE[i],OP1);
+                    }
+                    //y:=1*x
+                    if(strcmp(LHS, OP1) != 0  && strcmp(OP1,"1")==0 && OP == '*' )
+                    {
+                        TABLE[i][0] = '\0';
+                        strcat(TABLE[i],LHS);
+                        strcat(TABLE[i],":=");
+                        strcat(TABLE[i],OP2);
+                    }
                 }
+                
             }
 
             //have to implement for right and left shift
@@ -413,6 +499,8 @@ void main()
     char **TABLE = NULL;
     int TAB_LEN = 0;
     printf("Starting program");
+    //printf("\nNote:Stmt no in program starts from 0,but in input file,it is starting from 1(Be aware of this)");
+    //If awant to avoid this,search for stmts with jump_to variable,and comment out jump_to--
     TABLE = StmtTable(filename, &TAB_LEN);
     DisplayTABLE(TABLE, TAB_LEN);
     int *leaders = GetLeaders(TABLE, TAB_LEN);
@@ -462,8 +550,8 @@ void main()
             int jump_to;
             searchptr = searchptr + 4; //Advannce the goto part
             sscanf(searchptr, "%d", &jump_to);
-            jump_to--;
-            //Assume stmt indices start from 1 for file
+            //jump_to--;
+            //Assume stmt indices start from 1 for file(if above line is uncommented,else 0 based index)
             //Search which block does this stmt. no. belongs
             //We know that target stmt will be a leader
             int found = 0;
