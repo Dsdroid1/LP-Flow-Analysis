@@ -7,10 +7,7 @@
 //Local Optimisations Possible
 //Algebraic Simplification -----> +0,*1,*0
 //Constant Folding -----> +,*,/,-
-//Dead code elimination
-//common-subexpression elimination
-//copy propagation
-//
+//Dead code elimination -----> Done
 
 //Read a file and convert it into a stmt table(separate by stmts)
 char **StmtTable(char *filename, int *TAB_LEN)
