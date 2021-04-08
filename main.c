@@ -7,6 +7,7 @@
 //Local Optimisations Possible
 //Algebraic Simplification -----> +0,*1,*0
 //Constant Folding -----> +,*,/,-
+//Handle negative no.s in const folding,they give wrong result
 //Dead code elimination -----> Done
 
 //Read a file and convert it into a stmt table(separate by stmts)
@@ -275,7 +276,7 @@ void LocalOptimizer(char **TABLE, int TAB_LEN)
                 else if (OP == '-')
                 {
                     OP1 = strtok(dup_RHS, "-");
-                    OP2 = strtok(NULL, "-");
+                    OP2 = strtok(NULL, "");
                 }
                 else if (OP == '*')
                 {
@@ -294,31 +295,43 @@ void LocalOptimizer(char **TABLE, int TAB_LEN)
                 {
                     //printf("\n2 numbers at stmt %d",i);
                     //Evaluate expression
+                    int o1,o2;
+                    o1=atoi(OP1);
+                    o2=atoi(OP2);
+                    if(RHS[0]=='-')
+                    {
+                        o1=-o1;
+                        printf("\n%s %s",OP1,OP2);
+                    }
+                    if(strstr(OP2,"-"))
+                    {
+                        o2=-o2;
+                    }
                     if(OP=='+')
                     {
                         TABLE[i][0]='\0';
-                        int exp=atoi(OP1)+atoi(OP2);
+                        int exp=o1+o2;
                         //itoa(exp,TABLE[i],10);
                         sprintf(TABLE[i],"%s:=%d",LHS,exp);
                     }
                     else if(OP=='-')
                     {
                         TABLE[i][0]='\0';
-                        int exp=atoi(OP1)-atoi(OP2);
+                        int exp=o1-o2;
                         //itoa(exp,TABLE[i],10);
                         sprintf(TABLE[i],"%s:=%d",LHS,exp);
                     }
                     else if(OP=='*')
                     {
                         TABLE[i][0]='\0';
-                        int exp=atoi(OP1)*atoi(OP2);
+                        int exp=o1*o2;
                         //itoa(exp,TABLE[i],10);
                         sprintf(TABLE[i],"%s:=%d",LHS,exp);
                     }
                     else if(OP=='/')
                     {
                         TABLE[i][0]='\0';
-                        int exp=atoi(OP1)/atoi(OP2);
+                        int exp=o1/o2;
                         //itoa(exp,TABLE[i],10);
                         sprintf(TABLE[i],"%s:=%d",LHS,exp);
                     }
