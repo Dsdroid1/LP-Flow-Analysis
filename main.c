@@ -5,8 +5,8 @@
 #include "graph.h"
 
 //Local Optimisations Possible
-//Algebraic Simplification
-//Constant Folding
+//Algebraic Simplification -----> +0,*1,*0
+//Constant Folding -----> +,*,/,-
 //Dead code elimination
 //common-subexpression elimination
 //copy propagation
@@ -374,6 +374,14 @@ void LocalOptimizer(char **TABLE, int TAB_LEN)
                         strcat(TABLE[i],LHS);
                         strcat(TABLE[i],":=");
                         strcat(TABLE[i],OP2);
+                    }
+                    //y:=0*x
+                    if((strcmp(OP1,"0")==0 && OP=='*')||(strcmp(OP2,"0")==0 && OP=='*'))
+                    {
+                        TABLE[i][0]='\0';
+                        strcat(TABLE[i],LHS);
+                        strcat(TABLE[i],":=");
+                        strcat(TABLE[i],"0");
                     }
                 }
                 
