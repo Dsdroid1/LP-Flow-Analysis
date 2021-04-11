@@ -7,7 +7,6 @@
 //Local Optimisations Possible
 //Algebraic Simplification -----> +0,*1,*0
 //Constant Folding -----> +,*,/,-
-//Handle negative no.s in const folding,they give wrong result
 //Dead code elimination -----> Done
 
 //Read a file and convert it into a stmt table(separate by stmts)
