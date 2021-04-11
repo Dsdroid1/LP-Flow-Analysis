@@ -515,12 +515,15 @@ void DisplayNaturalLoops(FlowGraph *G)
 
 void main()
 {
-    char filename[20] = "file1.txt";
+    char filename[20];
     char **TABLE = NULL;
     int TAB_LEN = 0;
     printf("Starting program");
     //printf("\nNote:Stmt no in program starts from 0,but in input file,it is starting from 1(Be aware of this)");
     //If awant to avoid this,search for stmts with jump_to variable,and comment out jump_to--
+    printf("\nEnter filename:");
+    scanf("%s",filename);
+    
     TABLE = StmtTable(filename, &TAB_LEN);
     DisplayTABLE(TABLE, TAB_LEN);
     int *leaders = GetLeaders(TABLE, TAB_LEN);

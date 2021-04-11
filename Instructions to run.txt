@@ -1,0 +1,7 @@
+To compile
+gcc main.c graph.c -o main
+To run
+./main 
+The program will ask for filename,give it and press enter
+
+
