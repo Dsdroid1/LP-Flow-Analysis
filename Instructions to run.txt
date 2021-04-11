@@ -5,3 +5,11 @@ To run
 The program will ask for filename,give it and press enter
 
 
+Contributions:
+Leader identification-Kartik Kshirsagar
+CFG Creation-Dhruv Sharma
+Dominators and DFS functions-Kartik Kshirsagar
+Basic Graph structures and functions-Both
+Natural Loop detection-Dhruv Sharma
+Local Optimisations(constant folding,algebraic simplification)-Kartik Kshirsagar
+Dead code elimination-Dhruv Sharma
